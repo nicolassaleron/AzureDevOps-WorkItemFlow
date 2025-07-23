@@ -64,14 +64,26 @@ async function performOperations(adoPat: string, updateOperations: UpdateOperati
 export async function OnWorkItemUpdated(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`\n\n** OnWorkItemUpdated: Started **"`);
 
-    if (!request.headers.has('X-ADO-PAT')) {
+    if (!request.headers.has('X-ADO-PAT')) {        
         context.log(`\n\n** ❌ OnWorkItemUpdated: Finished with status 400 **"`);
         return {
             status: 400,
             body: 'X-ADO-PAT header is required'
         };
     }
-    const adoPat = request.headers.get('X-ADO-PAT');
+    let adoPat = request.headers.get('X-ADO-PAT');
+    if (adoPat.startsWith('{') && adoPat.endsWith('}')) {
+        // If the PAT is in the form of an environment variable, get the value from the environment
+        const envVarName = adoPat.slice(1, -1); // Remove the curly braces
+        if (!process.env[envVarName]) {
+            context.log(`\n\n** ❌ OnWorkItemUpdated: Finished with status 400 **"`);
+            return {
+                status: 400,
+                body: `Environment variable ${envVarName} not found`
+            };
+        }
+        adoPat = process.env[envVarName];
+    }
 
     if (!request.headers.has('X-ADO-RULES')) {
         context.log(`\n\n** ❌ OnWorkItemUpdated: Finished with status 400 **"`);
