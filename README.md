@@ -21,9 +21,19 @@ This is an Azure Function that automatically updates Azure DevOps work items bas
    - In the **HTTP Headers** section, add the following headers:
      - `X-ADO-PAT`: Your Azure DevOps Personal Access Token (PAT) with sufficient permissions to read and update work items.
 
-      > Alternatively, you can set the PAT as an environment variable in your Azure Function and reference it in the header as `X-ADO-PAT: {your_pat_variable}` (do not forget the curly braces).
+       > Alternatively, you can set the PAT as an environment variable in your Azure Function and reference it in the header as `X-ADO-PAT: {your_pat_variable}` (do not forget the curly braces).
 
-     - `X-ADO-RULES`: The URL to your DSL rules file in Azure DevOps. You can get this URL by navigating to the file in Azure DevOps, clicking on the "Download" button, and copying the URL from the browser's download list.
+     - `X-ADO-RULES`: The URL to your DSL rules file in Azure DevOps.
+  
+        > You can get this URL by navigating to the file in Azure DevOps, clicking on the "Download" button, and copying the URL from the browser's download list.
+     
+     - `X-ADO-RULES-FORMAT`: (optional) The format of the rules file.
+
+        > | X-ADO-RULES-FORMAT | Description |
+        > |--------------------|-------------|
+        > | `text/plain`       | The rules file is in plain text format. This is the default format and it is expected to be a text file with only DSL rules. |
+        > | `text/markdown`    | The rules file is in Markdown format. This allows for more complex formatting and documentation within the rules file. The function will use the first code section found in the Markdown file as the DSL rules. |
+
    - Then click **Finish** to create the subscription.
  
 
