@@ -100,7 +100,24 @@ export async function OnWorkItemUpdated(request: HttpRequest, context: Invocatio
             'Authorization': `Basic ${Buffer.from(`az:${adoPat}`).toString('base64')}`
         }
     });
-    const dslRules = adoRulesResponse.data;
+    let dslRules = adoRulesResponse.data;
+
+
+    const dslRulesFormat = request.headers.get('X-ADO-RULES-FORMAT') || 'text/plain';
+    if (dslRulesFormat === 'text/markdown') {
+        // If the rules are in Markdown format, extract the first code block
+        const codeBlockMatch = dslRules.match(/```.*\n([\s\S]*?)\n```/);
+        if (codeBlockMatch) {
+            dslRules = codeBlockMatch[1].trim();
+        } else {
+            context.log(`\n\n** ❌ OnWorkItemUpdated: Finished with status 400 **"`);
+            return {
+                status: 400,
+                body: 'No DSL code block found in the Markdown file.'
+            };
+        }
+    }    
+
     context.log(`🐞 Rules:\n${dslRules}`);
 
     const serviceHook: WorkItemWebhook = await request.json() as WorkItemWebhook;
