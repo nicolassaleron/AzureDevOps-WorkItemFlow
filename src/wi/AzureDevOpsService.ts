@@ -18,7 +18,7 @@ export async function sendUpdateOperations(adoPat: string, operations: UpdateOpe
     context.log(`ℹ️ Sending ${operations.length} operations to ${url}`);
     context.log(`🐞 Operations:\n${JSON.stringify(operations)}`);
 
-    /*await axios.patch(url,
+    await axios.patch(url,
         operations.map(op => ({
             "op": op.op,
             "path": op.path,
@@ -35,7 +35,7 @@ export async function sendUpdateOperations(adoPat: string, operations: UpdateOpe
                 'Content-Type': 'application/json-patch+json'
             }
         }
-    );*/
+    );
 }
 
 /**
