@@ -50,7 +50,7 @@ async function performOperations(adoPat: string, updateOperations: UpdateOperati
     // Iterate over each work item URL
     for (const url in groupedOperations) {
         const operations = groupedOperations[url];
-
+        
         try {
             sendUpdateOperations(adoPat, operations, context);
             context.log('✅ Update operations sent successfully.');
